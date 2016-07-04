@@ -1,5 +1,6 @@
 package org.xhtmlrenderer.pdf.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,17 @@ import org.xhtmlrenderer.extend.FontResolver;
 import org.xhtmlrenderer.layout.SharedContext;
 import org.xhtmlrenderer.render.FSFont;
 
+/**
+ * Font resolver.
+ * 
+ * This class implements the method resolveFont, which returns a FSFont, based
+ * on a FontSpecification (family, weight, style, variant).
+ * 
+ * TODO : 
+ * - public void addFont(String path, String encoding, boolean embedded)
+ * - text-decoration: line-through;
+ * 
+ */
 public class PDFBoxFontResolver implements FontResolver {
 	private static Logger log = Logger.getLogger("PDFBoxFontResolver");
 	private Map<String, FontFamily> fontFamilies = createInitialFontMap();
@@ -52,7 +64,7 @@ public class PDFBoxFontResolver implements FontResolver {
 		FontDescription result = fontCache.get(cacheKey);
 
 		if (result != null) {
-			return new PdfBoxFSFont(result.getFont(), size);
+			return new PdfBoxFSFont(result, size);
 		}
 
 		FontFamily family = fontFamilies.get(normalizedFontFamily);
@@ -60,7 +72,7 @@ public class PDFBoxFontResolver implements FontResolver {
 			result = family.match(convertWeightToInt(weight), style);
 			if (result != null) {
 				fontCache.put(cacheKey, result);
-				return new PdfBoxFSFont(result.getFont(), size);	
+				return new PdfBoxFSFont(result, size);
 			}
 		}
 
@@ -222,31 +234,70 @@ public class PDFBoxFontResolver implements FontResolver {
 				}
 			}
 
-            FontDescription result = findByWeight(candidates, desiredWeight);
-            if (result != null) return result;
-			return candidates.get(0);
+			// Find exact weight
+			FontDescription result = findExactWeight(candidates, desiredWeight);
+			if (result != null)
+				return result;
+
+			// Find closest weight
+			result = findClosestWeight(candidates, desiredWeight);
+			return result;
 		}
 
-		private FontDescription findByWeight(List<FontDescription> candidates, int desiredWeight) {
-			 for (FontDescription fd:candidates) {
-                 if (fd.getWeight() == desiredWeight) {
-                     return fd;
-                 }
-             }
-             return null;
+		private FontDescription findClosestWeight(List<FontDescription> candidates, int desiredWeight) {
+			int delta = Math.abs(candidates.get(0).weight - desiredWeight);
+			FontDescription res = candidates.get(0);
+			for (int i = 1; i < candidates.size(); i++) {
+				FontDescription fd = candidates.get(i);
+				int d = Math.abs(fd.getWeight() - desiredWeight);
+				if (d < delta) {
+					delta = d;
+					res = fd;
+				}
+			}
+			return res;
+		}
+
+		private FontDescription findExactWeight(List<FontDescription> candidates, int desiredWeight) {
+			for (FontDescription fd : candidates) {
+				if (fd.getWeight() == desiredWeight) {
+					return fd;
+				}
+			}
+			return null;
 		}
 
 	}
 
-	private static class FontDescription {
+	public static class FontDescription {
 		PDFont font;
 		IdentValue style;
 		int weight;
+		int yStrikeoutPosition;
+		int yStrikeoutSize;
+		int underlinePosition;
+		int underlineThickness;
+
+		public FontDescription(PDFont font) {
+			this(font, IdentValue.NORMAL, 400);
+		}
 
 		public FontDescription(PDFont font, IdentValue style, int weight) {
 			this.font = font;
 			this.style = style;
 			this.weight = weight;
+			underlinePosition = -50;
+			underlineThickness = 50;
+
+			try {
+				float h = font.getHeight('x');
+					yStrikeoutPosition = (int) (h / 2 + 50);
+					yStrikeoutSize = 100;
+			} catch (IOException e) {
+				log.severe("IOException "+e.getMessage());
+				yStrikeoutPosition = 0;
+				yStrikeoutSize = 0;
+			}
 		}
 
 		public PDFont getFont() {
@@ -259,6 +310,22 @@ public class PDFBoxFontResolver implements FontResolver {
 
 		public IdentValue getStyle() {
 			return style;
+		}
+
+		public int getYStrikeoutPosition() {
+			return yStrikeoutPosition;
+		}
+
+		public int getYStrikeoutSize() {
+			return underlinePosition;
+		}
+
+		public int getUnderlinePosition() {
+			return underlinePosition;
+		}
+
+		public float getUnderlineThickness() {
+			return underlineThickness;
 		}
 	}
 }

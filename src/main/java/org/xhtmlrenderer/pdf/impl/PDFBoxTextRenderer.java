@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.xhtmlrenderer.extend.FSGlyphVector;
 import org.xhtmlrenderer.extend.FontContext;
 import org.xhtmlrenderer.extend.OutputDevice;
@@ -42,11 +41,24 @@ public class PDFBoxTextRenderer implements TextRenderer {
 	public FSFontMetrics getFSFontMetrics(FontContext context, FSFont font, String string) {
 		log.info("getFSFontMetrics");
 		PdfBoxFSFont f = (PdfBoxFSFont) font;
-		PDFontDescriptor fd = f.getFontDescription().getFontDescriptor();
+		PDFont pdfont = f.getFontDescription().getFont();
+		PDFontDescriptor fd = pdfont.getFontDescriptor();
+
+		float size = f.getSize2D();
 
 		PDFBoxFontMetrics result = new PDFBoxFontMetrics();
-		result.setAscent(fd.getAscent()* f.getSize2D() / 1000f);
-		result.setDescent(fd.getDescent()* f.getSize2D() / 1000f);
+		result.setAscent(fd.getAscent() * size / 1000f);
+		result.setDescent(fd.getDescent() * size / 1000f);
+
+		result.setStrikethroughOffset(-f.getFontDescription().getYStrikeoutPosition() / 1000f * size);
+		if (f.getFontDescription().getYStrikeoutSize() != 0) {
+			result.setStrikethroughThickness(f.getFontDescription().getYStrikeoutSize() / 1000f * size);
+		} else {
+			result.setStrikethroughThickness(size / 12.0f);
+		}
+
+		result.setUnderlineOffset(-f.getFontDescription().getUnderlinePosition() / 1000f * size);
+		result.setUnderlineThickness(f.getFontDescription().getUnderlineThickness() / 1000f * size);
 
 		return result;
 
@@ -60,9 +72,11 @@ public class PDFBoxTextRenderer implements TextRenderer {
 		if (s == null || s.length() == 0)
 			return 0;
 		PdfBoxFSFont f = (PdfBoxFSFont) font;
+		PDFont pdfont = f.getFontDescription().getFont();
+
 		try {
 			// getStringWidth returns the width in 1/1000 units of text space.
-			float result = f.getFontDescription().getStringWidth(s) * f.getSize2D() / 1000f;
+			float result = pdfont.getStringWidth(s) * f.getSize2D() / 1000f;
 			return (int) result;
 		} catch (IOException e) {
 			log.severe("Erreur getWidth");

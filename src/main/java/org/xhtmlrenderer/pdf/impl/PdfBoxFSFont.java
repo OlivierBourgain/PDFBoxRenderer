@@ -1,13 +1,13 @@
 package org.xhtmlrenderer.pdf.impl;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xhtmlrenderer.pdf.impl.PDFBoxFontResolver.FontDescription;
 import org.xhtmlrenderer.render.FSFont;
 
 public class PdfBoxFSFont  implements FSFont {
-	    private PDFont font;
+	    private FontDescription font;
 	    private float size;
 	    
-	    public PdfBoxFSFont(PDFont font, float size) {
+	    public PdfBoxFSFont(FontDescription font, float size) {
 	        this.font = font;
 	        this.size = size;
 	    }
@@ -16,7 +16,7 @@ public class PdfBoxFSFont  implements FSFont {
 	        return size;
 	    }
 	    
-	    public PDFont getFontDescription() {
+	    public FontDescription getFontDescription() {
 	        return font;
 	    }
 }

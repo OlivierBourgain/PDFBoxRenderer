@@ -85,11 +85,6 @@ public class PDFBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 	}
 
 	@Override
-	public void drawTextDecoration(RenderingContext c, LineBox lineBox) {
-		log.info("drawTextDecoration");
-	}
-
-	@Override
 	public void paintReplacedElement(RenderingContext c, BlockBox box) {
 		log.info("paintReplacedElement");
 	}
@@ -253,7 +248,7 @@ public class PDFBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 			contents.beginText();
 			contents.setNonStrokingColor(color);
 			float size = (float)(font.getSize2D()*transform.getScaleX());
-			contents.setFont(font.getFontDescription(), size);
+			contents.setFont(font.getFontDescription().getFont(), size);
 			contents.newLineAtOffset((float)dest.getX(), (float)dest.getY());
 			contents.showText(s);
 			contents.endText();
