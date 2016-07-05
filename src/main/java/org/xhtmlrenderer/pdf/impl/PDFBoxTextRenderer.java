@@ -52,7 +52,7 @@ public class PDFBoxTextRenderer implements TextRenderer {
 
 		result.setStrikethroughOffset(-f.getFontDescription().getYStrikeoutPosition() / 1000f * size);
 		if (f.getFontDescription().getYStrikeoutSize() != 0) {
-			result.setStrikethroughThickness(f.getFontDescription().getYStrikeoutSize() / 1000f * size);
+			result.setStrikethroughThickness(-f.getFontDescription().getYStrikeoutSize() / 1000f * size);
 		} else {
 			result.setStrikethroughThickness(size / 12.0f);
 		}
@@ -73,14 +73,16 @@ public class PDFBoxTextRenderer implements TextRenderer {
 			return 0;
 		PdfBoxFSFont f = (PdfBoxFSFont) font;
 		PDFont pdfont = f.getFontDescription().getFont();
-
 		try {
 			// getStringWidth returns the width in 1/1000 units of text space.
 			float result = pdfont.getStringWidth(s) * f.getSize2D() / 1000f;
 			return (int) result;
+		} catch (IllegalArgumentException e) {
+			// Thrown when doc contains a non printable char
+			log.info("IllegalArgumentException for |" + s + "|");
+			throw new RuntimeException(e);
 		} catch (IOException e) {
-			log.severe("Erreur getWidth");
-			return 0;
+			throw new RuntimeException(e);
 		}
 	}
 
