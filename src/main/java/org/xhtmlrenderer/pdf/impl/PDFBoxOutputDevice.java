@@ -30,7 +30,6 @@ import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.render.FSFont;
 import org.xhtmlrenderer.render.InlineText;
 import org.xhtmlrenderer.render.JustificationInfo;
-import org.xhtmlrenderer.render.LineBox;
 import org.xhtmlrenderer.render.RenderingContext;
 
 public class PDFBoxOutputDevice extends AbstractOutputDevice implements OutputDevice {
@@ -108,7 +107,6 @@ public class PDFBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 
 	@Override
 	public void drawBorderLine(Shape bounds, int side, int width, boolean solid) {
-		log.info("drawBorderLine");
 		draw(bounds);
 	}
 

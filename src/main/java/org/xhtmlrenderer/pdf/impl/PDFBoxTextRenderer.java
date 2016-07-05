@@ -78,7 +78,8 @@ public class PDFBoxTextRenderer implements TextRenderer {
 			float result = pdfont.getStringWidth(s) * f.getSize2D() / 1000f;
 			return (int) result;
 		} catch (IllegalArgumentException e) {
-			// Thrown when doc contains a non printable char
+			// Thrown when using standard fonts, when String contains a non printable char, such as "&nbsp;" or "\n"
+			// FIXME
 			log.info("IllegalArgumentException for |" + s + "|");
 			throw new RuntimeException(e);
 		} catch (IOException e) {

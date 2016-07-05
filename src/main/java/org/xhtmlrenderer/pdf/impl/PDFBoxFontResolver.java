@@ -21,23 +21,19 @@ import org.xhtmlrenderer.render.FSFont;
  * This class implements the method resolveFont, which returns a FSFont, based
  * on a FontSpecification (family, weight, style, variant).
  * 
- * TODO : 
- * - public void addFont(String path, String encoding, boolean embedded)
- * - text-decoration: line-through;
- * 
+ * TODO : - public void addFont(String path, String encoding, boolean embedded)
  */
 public class PDFBoxFontResolver implements FontResolver {
 	private static Logger log = Logger.getLogger("PDFBoxFontResolver");
 	private Map<String, FontFamily> fontFamilies = createInitialFontMap();
 	private Map<String, FontDescription> fontCache = new HashMap<>();
 
-	public PDFBoxFontResolver(SharedContext _sharedContext) {
+	public PDFBoxFontResolver(SharedContext sharedContext) {
 		log.info("Creating new FontResolver");
 	}
 
 	@Override
 	public FSFont resolveFont(SharedContext renderingContext, FontSpecification spec) {
-		log.info("resolveFont " + spec);
 		return resolveFont(renderingContext, spec.families, spec.size, spec.fontWeight, spec.fontStyle, spec.variant);
 	}
 
@@ -291,10 +287,10 @@ public class PDFBoxFontResolver implements FontResolver {
 
 			try {
 				float h = font.getHeight('x');
-					yStrikeoutPosition = (int) (h / 2 + 50);
-					yStrikeoutSize = 100;
+				yStrikeoutPosition = (int) (h / 2 + 50);
+				yStrikeoutSize = 100;
 			} catch (IOException e) {
-				log.severe("IOException "+e.getMessage());
+				log.severe("IOException " + e.getMessage());
 				yStrikeoutPosition = 0;
 				yStrikeoutSize = 0;
 			}
@@ -328,4 +324,5 @@ public class PDFBoxFontResolver implements FontResolver {
 			return underlineThickness;
 		}
 	}
+
 }
