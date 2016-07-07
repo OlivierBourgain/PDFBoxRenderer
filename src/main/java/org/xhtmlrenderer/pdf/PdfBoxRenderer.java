@@ -24,10 +24,10 @@ import org.xhtmlrenderer.layout.BoxBuilder;
 import org.xhtmlrenderer.layout.Layer;
 import org.xhtmlrenderer.layout.LayoutContext;
 import org.xhtmlrenderer.layout.SharedContext;
-import org.xhtmlrenderer.pdf.impl.PDFBoxFontResolver;
-import org.xhtmlrenderer.pdf.impl.PDFBoxOutputDevice;
-import org.xhtmlrenderer.pdf.impl.PDFBoxReplacedElementFactory;
-import org.xhtmlrenderer.pdf.impl.PDFBoxTextRenderer;
+import org.xhtmlrenderer.pdf.impl.PdfBoxFontResolver;
+import org.xhtmlrenderer.pdf.impl.PdfBoxOutputDevice;
+import org.xhtmlrenderer.pdf.impl.PdfBoxReplacedElementFactory;
+import org.xhtmlrenderer.pdf.impl.PdfBoxTextRenderer;
 import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.render.PageBox;
 import org.xhtmlrenderer.render.RenderingContext;
@@ -37,7 +37,7 @@ import org.xhtmlrenderer.simple.extend.XhtmlNamespaceHandler;
 import org.xhtmlrenderer.swing.NaiveUserAgent;
 import org.xml.sax.InputSource;
 
-public class PDFBoxRenderer {
+public class PdfBoxRenderer {
 	private static Logger log = Logger.getLogger("PDFBoxRenderer");
 	// 20 dot per px, 96 px per in et 72 pt per in
 	private static final float DOTS_PER_POINT = 20f * 96 / 72;
@@ -45,27 +45,27 @@ public class PDFBoxRenderer {
 	private final SharedContext sharedContext;
 	private Document doc;
 	private BlockBox root;
-	private final PDFBoxOutputDevice outputDevice;
+	private final PdfBoxOutputDevice outputDevice;
 
 	private static final int DEFAULT_PIXEL_PER_INCH = 96;
 	private static final int DEFAULT_DOTS_PER_PIXEL = 20;
 	private static final int DEFAULT_DOT_PER_INCH = DEFAULT_PIXEL_PER_INCH * DEFAULT_DOTS_PER_PIXEL;
 
-	public PDFBoxRenderer() {
+	public PdfBoxRenderer() {
 		sharedContext = new SharedContext();
 
 		NaiveUserAgent userAgent = new NaiveUserAgent();
 		sharedContext.setUserAgentCallback(userAgent);
 		sharedContext.setCss(new StyleReference(userAgent));
 
-		outputDevice = new PDFBoxOutputDevice();
-		PDFBoxReplacedElementFactory replacedElementFactory = new PDFBoxReplacedElementFactory(outputDevice);
+		outputDevice = new PdfBoxOutputDevice();
+		PdfBoxReplacedElementFactory replacedElementFactory = new PdfBoxReplacedElementFactory(outputDevice);
 		sharedContext.setReplacedElementFactory(replacedElementFactory);
 
-		FontResolver fontResolver = new PDFBoxFontResolver(sharedContext);
+		FontResolver fontResolver = new PdfBoxFontResolver(sharedContext);
 		sharedContext.setFontResolver(fontResolver);
 
-		sharedContext.setTextRenderer(new PDFBoxTextRenderer());
+		sharedContext.setTextRenderer(new PdfBoxTextRenderer());
 		sharedContext.setDPI(DEFAULT_DOT_PER_INCH);
 		sharedContext.setDotsPerPixel(DEFAULT_DOTS_PER_PIXEL);
 		sharedContext.setPrint(true);

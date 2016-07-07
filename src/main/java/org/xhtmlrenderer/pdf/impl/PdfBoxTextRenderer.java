@@ -14,7 +14,7 @@ import org.xhtmlrenderer.render.FSFont;
 import org.xhtmlrenderer.render.FSFontMetrics;
 import org.xhtmlrenderer.render.JustificationInfo;
 
-public class PDFBoxTextRenderer implements TextRenderer {
+public class PdfBoxTextRenderer implements TextRenderer {
 	private static Logger log = Logger.getLogger("PDFBoxTextRenderer");
 
 	@Override
@@ -24,12 +24,12 @@ public class PDFBoxTextRenderer implements TextRenderer {
 
 	@Override
 	public void drawString(OutputDevice outputDevice, String s, float x, float y) {
-		((PDFBoxOutputDevice) outputDevice).drawString(s, x, y, null);
+		((PdfBoxOutputDevice) outputDevice).drawString(s, x, y, null);
 	}
 
 	@Override
 	public void drawString(OutputDevice outputDevice, String s, float x, float y, JustificationInfo info) {
-		((PDFBoxOutputDevice) outputDevice).drawString(s, x, y, info);
+		((PdfBoxOutputDevice) outputDevice).drawString(s, x, y, info);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class PDFBoxTextRenderer implements TextRenderer {
 
 		float size = f.getSize2D();
 
-		PDFBoxFontMetrics result = new PDFBoxFontMetrics();
+		PdfBoxFontMetrics result = new PdfBoxFontMetrics();
 		result.setAscent(fd.getAscent() * size / 1000f);
 		result.setDescent(fd.getDescent() * size / 1000f);
 

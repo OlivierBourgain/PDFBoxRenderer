@@ -32,7 +32,7 @@ import org.xhtmlrenderer.render.InlineText;
 import org.xhtmlrenderer.render.JustificationInfo;
 import org.xhtmlrenderer.render.RenderingContext;
 
-public class PDFBoxOutputDevice extends AbstractOutputDevice implements OutputDevice {
+public class PdfBoxOutputDevice extends AbstractOutputDevice implements OutputDevice {
 	// 20 dot per px, 96 px per in et 72 pt per in
 	private static final float DOTS_PER_POINT = 20f * 96 / 72;
 	private static Logger log = Logger.getLogger("PDFBoxOutputDevice");

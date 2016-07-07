@@ -23,12 +23,12 @@ import org.xhtmlrenderer.render.FSFont;
  * 
  * TODO : - public void addFont(String path, String encoding, boolean embedded)
  */
-public class PDFBoxFontResolver implements FontResolver {
+public class PdfBoxFontResolver implements FontResolver {
 	private static Logger log = Logger.getLogger("PDFBoxFontResolver");
 	private Map<String, FontFamily> fontFamilies = createInitialFontMap();
 	private Map<String, FontDescription> fontCache = new HashMap<>();
 
-	public PDFBoxFontResolver(SharedContext sharedContext) {
+	public PdfBoxFontResolver(SharedContext sharedContext) {
 		log.info("Creating new FontResolver");
 	}
 

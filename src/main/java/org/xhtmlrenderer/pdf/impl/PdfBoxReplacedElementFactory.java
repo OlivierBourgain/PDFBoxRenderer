@@ -8,9 +8,9 @@ import org.xhtmlrenderer.layout.LayoutContext;
 import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 
-public class PDFBoxReplacedElementFactory implements ReplacedElementFactory {
+public class PdfBoxReplacedElementFactory implements ReplacedElementFactory {
 
-	public PDFBoxReplacedElementFactory(PDFBoxOutputDevice _outputDevice) {
+	public PdfBoxReplacedElementFactory(PdfBoxOutputDevice _outputDevice) {
 	}
 
 	@Override

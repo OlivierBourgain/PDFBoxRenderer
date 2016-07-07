@@ -2,7 +2,7 @@ package org.xhtmlrenderer.pdf.impl;
 
 import org.xhtmlrenderer.render.FSFontMetrics;
 
-public class PDFBoxFontMetrics implements FSFontMetrics {
+public class PdfBoxFontMetrics implements FSFontMetrics {
 
 	private float ascent;
 	private float descent;

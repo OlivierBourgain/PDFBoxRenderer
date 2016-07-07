@@ -1,6 +1,6 @@
 package org.xhtmlrenderer.pdf.impl;
 
-import org.xhtmlrenderer.pdf.impl.PDFBoxFontResolver.FontDescription;
+import org.xhtmlrenderer.pdf.impl.PdfBoxFontResolver.FontDescription;
 import org.xhtmlrenderer.render.FSFont;
 
 public class PdfBoxFSFont  implements FSFont {
