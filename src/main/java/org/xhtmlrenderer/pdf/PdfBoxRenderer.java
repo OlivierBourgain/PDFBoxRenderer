@@ -28,13 +28,13 @@ import org.xhtmlrenderer.pdf.impl.PdfBoxFontResolver;
 import org.xhtmlrenderer.pdf.impl.PdfBoxOutputDevice;
 import org.xhtmlrenderer.pdf.impl.PdfBoxReplacedElementFactory;
 import org.xhtmlrenderer.pdf.impl.PdfBoxTextRenderer;
+import org.xhtmlrenderer.pdf.impl.PdfBoxUserAgent;
 import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.render.PageBox;
 import org.xhtmlrenderer.render.RenderingContext;
 import org.xhtmlrenderer.render.ViewportBox;
 import org.xhtmlrenderer.resource.XMLResource;
 import org.xhtmlrenderer.simple.extend.XhtmlNamespaceHandler;
-import org.xhtmlrenderer.swing.NaiveUserAgent;
 import org.xml.sax.InputSource;
 
 public class PdfBoxRenderer {
@@ -54,10 +54,10 @@ public class PdfBoxRenderer {
 	public PdfBoxRenderer() {
 		sharedContext = new SharedContext();
 
-		NaiveUserAgent userAgent = new NaiveUserAgent();
+		PdfBoxUserAgent userAgent = new PdfBoxUserAgent();
 		sharedContext.setUserAgentCallback(userAgent);
 		sharedContext.setCss(new StyleReference(userAgent));
-
+		
 		outputDevice = new PdfBoxOutputDevice();
 		PdfBoxReplacedElementFactory replacedElementFactory = new PdfBoxReplacedElementFactory(outputDevice);
 		sharedContext.setReplacedElementFactory(replacedElementFactory);
@@ -69,6 +69,8 @@ public class PdfBoxRenderer {
 		sharedContext.setDPI(DEFAULT_DOT_PER_INCH);
 		sharedContext.setDotsPerPixel(DEFAULT_DOTS_PER_PIXEL);
 		sharedContext.setPrint(true);
+		sharedContext.setInteractive(false);
+
 	}
 
 	private Document loadDocument(final String uri) {
@@ -184,7 +186,7 @@ public class PdfBoxRenderer {
 			log.info("Doing page " + i);
 			c.setPage(i, currentPage);
 			paintPage(c, currentPage);
-			
+
 			outputDevice.finishPage(page);
 		}
 

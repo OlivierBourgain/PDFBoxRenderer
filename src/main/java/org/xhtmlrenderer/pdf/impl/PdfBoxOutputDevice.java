@@ -20,6 +20,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.xhtmlrenderer.css.parser.FSCMYKColor;
 import org.xhtmlrenderer.css.parser.FSColor;
 import org.xhtmlrenderer.css.parser.FSRGBColor;
@@ -47,7 +49,7 @@ public class PdfBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 	private Color color;
 	private Stroke stroke;
 
-    private PdfBoxFSFont font;
+	private PdfBoxFSFont font;
 
 	public void setDocument(PDDocument doc) {
 		this.doc = doc;
@@ -85,7 +87,9 @@ public class PdfBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 
 	@Override
 	public void paintReplacedElement(RenderingContext c, BlockBox box) {
-		log.info("paintReplacedElement");
+		PdfBoxReplacedElement element = (PdfBoxReplacedElement) box.getReplacedElement();
+		element.paint(c, this, box);
+
 	}
 
 	@Override
@@ -112,7 +116,23 @@ public class PdfBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 
 	@Override
 	public void drawImage(FSImage image, int x, int y) {
-		log.info("drawImage");
+		PdfBoxFSImage img = (PdfBoxFSImage) image;
+		log.info("drawImage at " + x + "/" + y);
+		log.info("w/h = " + img.getWidth() + "/" + img.getHeight());
+		try {
+			PDImageXObject imgx = LosslessFactory.createFromImage(doc, img.bimg);
+
+			Point2D src = new Point2D.Float(x, y + img.getHeight());
+			Point2D dest = new Point2D.Float();
+			transform.transform(src, dest);
+
+			float width = (float) (img.getWidth() * transform.getScaleX());
+			float height = (float) (-img.getHeight() * transform.getScaleY());
+			contents.drawImage(imgx, (float) dest.getX(), (float) dest.getY(), width, height);
+
+		} catch (IOException e) {
+			log.severe("IO Exception " + e.getStackTrace());
+		}
 	}
 
 	// -----------------------
@@ -240,14 +260,14 @@ public class PdfBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 		log.info("Drawing string [" + s + "] at " + x + "/" + y);
 
 		try {
-			Point2D src = new Point2D.Float(x,y);
+			Point2D src = new Point2D.Float(x, y);
 			Point2D dest = new Point2D.Float();
 			transform.transform(src, dest);
 			contents.beginText();
 			contents.setNonStrokingColor(color);
-			float size = (float)(font.getSize2D()*transform.getScaleX());
+			float size = (float) (font.getSize2D() * transform.getScaleX());
 			contents.setFont(font.getFontDescription().getFont(), size);
-			contents.newLineAtOffset((float)dest.getX(), (float)dest.getY());
+			contents.newLineAtOffset((float) dest.getX(), (float) dest.getY());
 			contents.showText(s);
 			contents.endText();
 
