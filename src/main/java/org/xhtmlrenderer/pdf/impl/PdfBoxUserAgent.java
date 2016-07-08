@@ -59,14 +59,13 @@ public class PdfBoxUserAgent extends NaiveUserAgent {
 
 		try (InputStream is = resolveAndOpenStream(uriStr)) {
 			URI uri = new URI(uriStr);
-			if (uri.getPath() != null && uri.getPath().toLowerCase().endsWith(".png")) {
+			if (uri.getPath() != null && uri.getPath().toLowerCase().endsWith(".pdf")) {
+				throw new UnsupportedOperationException("format not supported");
+			} else {
 				BufferedImage bimg = ImageIO.read(new File(uri));
 				PdfBoxFSImage img = new PdfBoxFSImage(bimg);
 				resource = new ImageResource(uriStr, img);
 				_imageCache.put(uriStr, resource);
-
-			} else {
-				throw new UnsupportedOperationException("format not supported");
 			}
 			return resource;
 		} catch (Exception e) {

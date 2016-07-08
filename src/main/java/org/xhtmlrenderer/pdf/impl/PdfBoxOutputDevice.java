@@ -20,7 +20,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
-import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.xhtmlrenderer.css.parser.FSCMYKColor;
 import org.xhtmlrenderer.css.parser.FSColor;
@@ -120,7 +120,7 @@ public class PdfBoxOutputDevice extends AbstractOutputDevice implements OutputDe
 		log.info("drawImage at " + x + "/" + y);
 		log.info("w/h = " + img.getWidth() + "/" + img.getHeight());
 		try {
-			PDImageXObject imgx = LosslessFactory.createFromImage(doc, img.bimg);
+			PDImageXObject imgx = JPEGFactory.createFromImage(doc, img.bimg);
 
 			Point2D src = new Point2D.Float(x, y + img.getHeight());
 			Point2D dest = new Point2D.Float();
